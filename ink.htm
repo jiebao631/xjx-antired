@@ -2,160 +2,197 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>安全跳转页面</title>
+  <title>安全跳转验证</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* 三点加载动画样式 */
+    body {
+      background: linear-gradient(to-br, #f0f9ff, #e6f7ff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
     .container {
-      width: 100px;
-      height: 100px;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      animation: rotate-move 2s ease-in-out infinite;
-      display: none;
-    }
-    .dot {
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      margin: auto;
-    }
-    .dot-3 { background-color: #f74d75; animation: dot-3-move 2s ease infinite; }
-    .dot-2 { background-color: #10beae; animation: dot-2-move 2s ease infinite; }
-    .dot-1 { background-color: #ffe386; animation: dot-1-move 2s ease infinite; }
-    
-    @keyframes dot-3-move {
-      20%,100% { transform: scale(1) }
-      45%,80% { transform: translateY(-18px) scale(.45) }
-    }
-    @keyframes dot-2-move {
-      20%,100% { transform: scale(1) }
-      45%,80% { transform: translate(-16px, 12px) scale(.45) }
-    }
-    @keyframes dot-1-move {
-      20%,100% { transform: scale(1) }
-      45%,80% { transform: translate(16px, 12px) scale(.45) }
-    }
-    @keyframes rotate-move {
-      55% { transform: translate(-50%, -50%) rotate(0deg) }
-      80%,100% { transform: translate(-50%, -50%) rotate(360deg) }
-    }
-
-    /* 全局水印样式 */
-    .watermark {
-      position: fixed;
-      pointer-events: none;
-      width: 100%;
-      height: 100%;
-      background-image: repeating-linear-gradient(
-        -45deg,
-        rgba(255, 0, 0, 0.1),
-        rgba(255, 0, 0, 0.1) 20px,
-        rgba(0, 0, 255, 0.1) 20px,
-        rgba(0, 0, 255, 0.1) 40px
-      );
-      z-index: 9999;
-      display: none;
-    }
-    .watermark-text {
-      position: absolute;
-      color: rgba(255, 0, 0, 0.6);
-      font-size: 18px;
-      font-weight: bold;
       text-align: center;
-      width: 100%;
-      top: 50%;
-      transform: translateY(-50%);
-      text-shadow: 1px 1px 1px #fff;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2.5rem 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
+      max-width: 90%;
+      width: 420px;
+      backdrop-filter: blur(8px);
     }
-
-    /* iframe样式 */
-    .content {
-      height: 100%;
+    .icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 1.8rem;
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.8rem;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    }
+    h1 {
+      color: #1e293b;
+      font-size: 1.6rem;
+      margin-bottom: 1.2rem;
+      font-weight: 600;
+    }
+    p {
+      color: #64748b;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+    .btn {
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+      color: white;
+      border: none;
+      padding: 1rem 2.2rem;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
       width: 100%;
-      position: fixed;
-      inset: -2px;
-      z-index: 1;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(59, 130, 246, 0.25);
+    }
+    .tip {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .warning {
+      color: #ef4444;
+      font-weight: 500;
     }
   </style>
 </head>
-
 <body>
-  <!-- 三点加载动画容器 -->
-  <div class="container" id="loadingContainer">
-    <div class="dot dot-1"></div>
-    <div class="dot dot-2"></div>
-    <div class="dot dot-3"></div>
-  </div>
-
-  <!-- 全局水印 -->
-  <div class="watermark" id="watermark">
-    <div class="watermark-text">提示：请联系TG:jiyuannb66</div>
+  <div class="container">
+    <div class="icon">
+      <<i class="fa fa-shield"></</i>
+    </div>
+    <h1>安全跳转验证中</h1>
+    <p>正在验证链接有效性，请稍候...</p>
+    <button class="btn" id="jumpBtn" style="display: none;">立即跳转</button>
+    <p class="tip" id="tipText">链接验证通过后将自动跳转，若未跳转可点击按钮手动操作</p>
   </div>
 
   <script>
-    (function() {
-      // 这里不再有白名单限制
-      const WATERMARK_TEXT = '提示：请联系TG:HXMVP';
+    // Base64解码函数
+    function base64Decode(str) {
+      try {
+        return decodeURIComponent(escape(atob(str)));
+      } catch (e) {
+        return null;
+      }
+    }
 
-      // 显示三点加载动画
-      function showLoadingAnimation() {
-        document.getElementById('loadingContainer').style.display = 'block';
+    // 获取URL参数
+    function getUrlParam(name) {
+      const reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`);
+      const r = window.location.search.substr(1).match(reg);
+      return r ? decodeURIComponent(r[2]) : null;
+    }
+
+    // 验证链接有效期
+    function validateExpire(expireTimestamp) {
+      // 0表示永久有效
+      if (expireTimestamp === 0) return true;
+      // 验证是否过期
+      return Date.now() < expireTimestamp;
+    }
+
+    // 解析并处理跳转
+    window.onload = function() {
+      const encodedData = getUrlParam('d');
+      const jumpBtn = document.getElementById('jumpBtn');
+      const tipText = document.getElementById('tipText');
+      const titleElement = document.querySelector('h1');
+      const descElement = document.querySelector('p');
+
+      if (!encodedData) {
+        titleElement.textContent = '链接无效';
+        descElement.textContent = '该防红链接格式错误或已被篡改，请检查链接完整性。';
+        tipText.textContent = '建议重新生成防红链接后尝试访问';
+        jumpBtn.textContent = '返回首页';
+        jumpBtn.style.display = 'block';
+        jumpBtn.onclick = function() {
+          window.location.href = './index.html';
+        };
+        return;
       }
 
-      // 主处理逻辑
-      function processRedirect() {
-        showLoadingAnimation();
+      try {
+        // 解码数据
+        const decodedStr = base64Decode(encodedData);
+        if (!decodedStr) throw new Error('链接数据解码失败');
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const encodedParam = urlParams.get('c');
-        
-        if (!encodedParam) {
-          document.getElementById('watermark').style.display = 'block';
-          document.getElementById('loadingContainer').style.display = 'none';
+        const data = JSON.parse(decodedStr);
+        const targetUrl = data.url;
+        const expireTimestamp = data.expire || 0;
+
+        // 验证目标链接
+        if (!targetUrl || !/^https?:\/\//i.test(targetUrl)) {
+          throw new Error('目标链接格式无效');
+        }
+
+        // 验证有效期
+        if (!validateExpire(expireTimestamp)) {
+          titleElement.textContent = '链接已过期';
+          descElement.textContent = '该防红链接已超过有效期限，无法继续跳转。';
+          tipText.textContent = '请联系链接提供者获取新的有效链接';
+          jumpBtn.textContent = '返回首页';
+          jumpBtn.style.display = 'block';
+          jumpBtn.onclick = function() {
+            window.location.href = './index.html';
+          };
           return;
         }
-        
-        try {
-          const trueUrl = atob(encodedParam);
-          if (trueUrl.includes("http")) {
-            // 直接加载iframe，不判断域名
-            const iframe = document.createElement('iframe');
-            iframe.className = 'content';
-            iframe.src = trueUrl;
-            
-            iframe.addEventListener('load', function() {
-              document.getElementById('loadingContainer').style.display = 'none';
-            });
-            
-            document.body.appendChild(iframe);
-          }
-        } catch (e) {
-          console.error('URL解码失败:', e);
-          document.getElementById('watermark').style.display = 'block';
-          document.getElementById('loadingContainer').style.display = 'none';
-        }
+
+        // 显示跳转信息
+        titleElement.textContent = '验证通过，即将跳转';
+        descElement.textContent = '链接安全有效，正在准备跳转到目标页面...';
+        jumpBtn.textContent = '立即跳转';
+        jumpBtn.style.display = 'block';
+
+        // 自动跳转（延迟3秒）
+        const autoJumpTimer = setTimeout(() => {
+          window.location.href = targetUrl;
+        }, 3000);
+
+        // 手动跳转按钮
+        jumpBtn.onclick = function() {
+          clearTimeout(autoJumpTimer);
+          window.location.href = targetUrl;
+        };
+
+      } catch (err) {
+        titleElement.textContent = '跳转失败';
+        descElement.textContent = `错误信息：${err.message}`;
+        tipText.textContent = '若问题持续，请重新生成防红链接';
+        jumpBtn.textContent = '返回首页';
+        jumpBtn.style.display = 'block';
+        jumpBtn.onclick = function() {
+          window.location.href = './index.html';
+        };
       }
-
-      // 禁止F12开发者工具
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'F12' || 
-            (e.ctrlKey && e.shiftKey && e.key === 'I') || 
-            (e.ctrlKey && e.shiftKey && e.key === 'J') || 
-            (e.ctrlKey && e.key === 'U')) {
-          e.preventDefault();
-        }
-      });
-
-      processRedirect();
-    })();
+    };
   </script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </body>
 </html>
