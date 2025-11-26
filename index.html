@@ -48,8 +48,8 @@
         animation: fadeIn .55s;
       }
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from { opacity: 0;transform:translateY(10px);}
+        to { opacity: 1;transform:translateY(0);}
       }
     }
     /* 颜色选择器样式 */
@@ -107,6 +107,24 @@
           autocomplete="off"
         >
       </div>
+      
+      <!-- 链接有效期设置 -->
+      <div class="mt-4">
+        <label class="block text-gray-700 font-medium mb-2 text-sm">
+          <i class="fa fa-clock-o mr-1"></i> 链接有效期
+        </label>
+        <div class="flex flex-wrap gap-2">
+          <input type="radio" name="expire" id="expire1" class="hidden color-radio" value="0" checked>
+          <label for="expire1" class="px-3 py-2 rounded-lg border-2 border-gray-300 cursor-pointer text-sm hover:bg-gray-50 transition-colors">永久有效</label>
+          <input type="radio" name="expire" id="expire2" class="hidden color-radio" value="24">
+          <label for="expire2" class="px-3 py-2 rounded-lg border-2 border-gray-300 cursor-pointer text-sm hover:bg-gray-50 transition-colors">24小时</label>
+          <input type="radio" name="expire" id="expire3" class="hidden color-radio" value="72">
+          <label for="expire3" class="px-3 py-2 rounded-lg border-2 border-gray-300 cursor-pointer text-sm hover:bg-gray-50 transition-colors">3天</label>
+          <input type="radio" name="expire" id="expire4" class="hidden color-radio" value="168">
+          <label for="expire4" class="px-3 py-2 rounded-lg border-2 border-gray-300 cursor-pointer text-sm hover:bg-gray-50 transition-colors">7天</label>
+        </div>
+      </div>
+      
       <!-- 颜色选择器 -->
       <div class="mt-4">
         <span class="text-xs text-gray-700 font-medium mb-1 block">二维码颜色：</span>
@@ -123,6 +141,7 @@
           <label for="qrcolor5" class="w-7 h-7 rounded-full border-2 border-gray-300 flex items-center justify-center cursor-pointer" style="background:#000000"></label>
         </div>
       </div>
+      
       <!-- 生成按钮 -->
       <button 
         class="btn-gradient w-full py-3 rounded-lg text-white font-semibold mt-4 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 text-base"
@@ -137,7 +156,7 @@
       <div class="bg-blue-50 border-l-4 border-primary p-4 rounded-lg mb-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-gray-700 font-semibold text-xs">防红链接</span>
-          <span class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full">已防红</span>
+          <span class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full" id="expireTip">永久有效</span>
         </div>
         <div id="output" class="text-sm text-blue-800 break-all select-all relative font-mono py-2 px-2 rounded bg-blue-100">
           <!-- 链接将在这里生成 -->
@@ -206,6 +225,7 @@
     // 生成防红链接
     function generate() {
       var url = document.getElementById('targetUrl').value.trim();
+      var expire = document.querySelector('input[name="expire"]:checked').value;
       var btn = document.getElementById('generateBtn');
       var qrcolor = document.querySelector('input[name="qrcolor"]:checked').value || "#2563eb";
 
@@ -223,13 +243,16 @@
       btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 生成中...';
 
       setTimeout(() => {
-        var encodedUrl = base64Encode(url);
+        var encodedParams = base64Encode(JSON.stringify({ url: url, expire: expire }));
         var currentOrigin = window.location.origin;
         var currentPath = window.location.pathname.split('/').slice(0, -1).join('/');
-        var resultUrl = `${currentOrigin}${currentPath}/ink.htm?c=${encodedUrl}`;
+        var resultUrl = `${currentOrigin}${currentPath}/ink.htm?c=${encodedParams}`;
 
         document.getElementById('output').textContent = resultUrl;
         document.getElementById('result').classList.remove('hidden');
+
+        var expireText = expire == 0 ? '永久有效' : `${expire}小时内有效`;
+        document.getElementById('expireTip').textContent = expireText;
 
         var qrcodeDiv = document.getElementById('qrcode');
         qrcodeDiv.innerHTML = "";
