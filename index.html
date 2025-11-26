@@ -126,17 +126,18 @@
       <!-- 链接有效期设置 -->
       <div class="mt-4">
         <label for="linkExpiry" class="block text-gray-700 font-medium mb-2 text-sm">
-          <i class="fa fa-clock-o mr-1"></i> 链接有效期（天）
+          <i class="fa fa-clock-o mr-1"></i> 链接有效期
         </label>
-        <input 
-          type="number" 
-          id="linkExpiry" 
-          placeholder="请输入链接有效期（天）" 
-          class="w-full pl-4 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 text-sm bg-gray-50"
-          autocomplete="off"
-          min="1"
-          value="7"
-        >
+        <div class="flex flex-wrap gap-2">
+          <input type="radio" name="expiry" id="expiryPermanent" class="hidden" value="permanent" checked>
+          <label for="expiryPermanent" class="cursor-pointer text-sm text-gray-700 hover:text-primary transition-all duration-200">永久有效</label>
+          <input type="radio" name="expiry" id="expiry7Days" class="hidden" value="7">
+          <label for="expiry7Days" class="cursor-pointer text-sm text-gray-700 hover:text-primary transition-all duration-200">7天</label>
+          <input type="radio" name="expiry" id="expiry1Day" class="hidden" value="1">
+          <label for="expiry1Day" class="cursor-pointer text-sm text-gray-700 hover:text-primary transition-all duration-200">1天</label>
+          <input type="radio" name="expiry" id="expiry3Hours" class="hidden" value="0.125">
+          <label for="expiry3Hours" class="cursor-pointer text-sm text-gray-700 hover:text-primary transition-all duration-200">3小时</label>
+        </div>
       </div>
       <!-- 生成按钮 -->
       <button 
@@ -221,7 +222,7 @@
     // 生成防红链接
     function generate() {
       var url = document.getElementById('targetUrl').value.trim();
-      var expiryDays = document.getElementById('linkExpiry').value.trim();
+      var expiry = document.querySelector('input[name="expiry"]:checked').value;
       var btn = document.getElementById('generateBtn');
       var qrcolor = document.querySelector('input[name="qrcolor"]:checked').value || "#2563eb";
 
@@ -235,11 +236,6 @@
         return;
       }
 
-      if (!expiryDays || expiryDays <= 0) {
-        showToast('请输入有效的链接有效期（天）！', 'error');
-        return;
-      }
-
       btn.disabled = true;
       btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 生成中...';
 
@@ -247,7 +243,7 @@
         var encodedUrl = base64Encode(url);
         var currentOrigin = window.location.origin;
         var currentPath = window.location.pathname.split('/').slice(0, -1).join('/');
-        var resultUrl = `${currentOrigin}${currentPath}/ink.htm?c=${encodedUrl}&expiry=${expiryDays}`;
+        var resultUrl = `${currentOrigin}${currentPath}/ink.htm?c=${encodedUrl}&expiry=${expiry}`;
 
         document.getElementById('output').textContent = resultUrl;
         document.getElementById('result').classList.remove('hidden');
