@@ -83,7 +83,7 @@
     <!-- Logo与标题 -->
     <div class="flex justify-center mt-5">
       <div class="w-14 h-14 flex items-center justify-center rounded-full bg-primary shadow-lg text-white text-2xl glow">
-        <<i class="fa fa-link"></</i>
+        <i class="fa fa-link"></i>
       </div>
     </div>
     <div class="text-center pt-2 pb-1 px-5">
@@ -93,11 +93,11 @@
     <!-- 输入区域 -->
     <div class="p-4 pt-2 mx-3">
       <label for="targetUrl" class="block text-gray-700 font-medium mb-2 text-sm">
-        <<i class="fa fa-globe mr-1"></</i> 目标网址
+        <i class="fa fa-globe mr-1"></i> 目标网址
       </label>
       <div class="relative">
         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-          <<i class="fa fa-link"></</i>
+          <i class="fa fa-link"></i>
         </span>
         <input 
           type="text" 
@@ -111,11 +111,11 @@
       <!-- 新增：自定义短链后缀 -->
       <div class="mt-4">
         <label for="customSuffix" class="block text-gray-700 font-medium mb-2 text-sm">
-          <<i class="fa fa-pencil-square-o mr-1"></</i> 自定义短链后缀（可选）
+          <i class="fa fa-pencil-square-o mr-1"></i> 自定义短链后缀（可选）
         </label>
         <div class="relative">
           <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-            <<i class="fa fa-hashtag"></</i>
+            <i class="fa fa-hashtag"></i>
           </span>
           <input 
             type="text" 
@@ -131,7 +131,7 @@
       <!-- 新增：链接有效期设置 -->
       <div class="mt-4">
         <label class="block text-gray-700 font-medium mb-2 text-sm">
-          <<i class="fa fa-clock-o mr-1"></</i> 链接有效期
+          <i class="fa fa-clock-o mr-1"></i> 链接有效期
         </label>
         <div class="flex flex-wrap gap-2">
           <input type="radio" name="expire" id="expire1" class="hidden color-radio" value="0" checked>
@@ -168,7 +168,7 @@
         onclick="generate()"
         id="generateBtn"
       >
-        <<i class="fa fa-magic mr-2"></</i> 生成防红链接
+        <i class="fa fa-magic mr-2"></i> 生成防红链接
       </button>
     </div>
     <!-- 结果区域 -->
@@ -185,20 +185,20 @@
           class="btn-gradient-secondary w-full py-2.5 rounded-lg text-white font-medium mt-3 shadow hover:shadow-lg transition-all duration-300 text-base"
           onclick="copyResult()"
         >
-          <<i class="fa fa-clipboard mr-2"></</i> 一键复制链接
+          <i class="fa fa-clipboard mr-2"></i> 一键复制链接
         </button>
       </div>
       <!-- 二维码区域 -->
       <div class="text-center pt-2">
         <h3 class="text-gray-600 font-medium text-xs mb-2 tracking-wide">
-          <<i class="fa fa-qrcode mr-1"></</i> 手机扫码访问
+          <i class="fa fa-qrcode mr-1"></i> 手机扫码访问
         </h3>
         <div id="qrcode" class="mx-auto p-3 bg-white rounded-lg shadow w-max"></div>
         <p class="text-xs text-gray-400 mt-2">长按二维码可保存图片</p>
       </div>
-    </div>
-  <!-- Toast 提示 -->
-  <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow-lg z-50 hidden text-white font-medium text-sm"></div>
+    <!-- Toast 提示 -->
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow-lg z-50 hidden text-white font-medium text-sm"></div>
+  </div>
   <script>
     // 页面加载完成后初始化
     document.addEventListener('DOMContentLoaded', function() {
@@ -266,7 +266,7 @@
       }
       
       btn.disabled = true;
-      btn.innerHTML = '<<i class="fa fa-spinner fa-spin mr-2"></</i> 生成中...';
+      btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 生成中...';
       
       setTimeout(() => {
         // 构建完整参数（包含有效期和自定义后缀）
@@ -308,7 +308,7 @@
         });
     
         btn.disabled = false;
-        btn.innerHTML = '<<i class="fa fa-magic mr-2"></</i> 生成防红链接';
+        btn.innerHTML = '<i class="fa fa-magic mr-2"></i> 生成防红链接';
         showToast('防红链接生成成功！', 'success');
       }, 700);
     }
@@ -358,27 +358,5 @@
       document.getElementById('wechatModal').classList.add('hidden');
     }
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'958f10d3ac8ca4bf',t:'MTc1MTQ2ODk4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"958f10d3ac8ca4bf","version":"2025.6.2","r":1,"token":"349b5e7f6ae643a08037960189c0bd8f","serverTiming":{"name":{"cfExtPri":true,"cfEdge":true,"cfOrigin":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}}}' crossorigin="anonymous"></script>
 </body>
-<script language="JavaScript">
-    //禁止页面选择以及鼠标右键
-    document.oncontextmenu=function(){return false;}; 
-    document.onselectstart=function(){return false;};
-    let h = window.innerHeight;
-    let w = window.innerWidth;
-    //禁用右键
-    document.oncontextmenu = function () { return false; };
-    //禁用开发者工具F12和禁止shift+ctrl+i调起开发者工具
-    document.onkeydown = function () {
-        if (window.event && window.event.keyCode == 123) {
-            event.keyCode = 0;
-            event.returnValue = false;
-            return false;
-        }
-        if (event.shiftKey && event.ctrlKey && event.keyCode === 73) {
-            event.preventDefault();
-            return false;
-        }
-    };
-</script>
 </html>

@@ -2,142 +2,102 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>跳转中...</title>
+  <title>安全跳转中...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="color-scheme" content="light dark">
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/iosxlb/static@main/favicon/link.ico" type="image/x-icon">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <style type="text/tailwindcss">
-    @layer utilities {
-      .animate-fadeIn {
-        animation: fadeIn .5s;
-      }
-      .animate-pulse-slow {
-        animation: pulse 2s infinite;
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
-      }
+    body {
+      @apply bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans;
+    }
+    .container {
+      @apply max-w-md mx-auto p-4;
+    }
+    .btn-primary {
+      @apply bg-primary text-white py-2 px-4 rounded-lg shadow hover:shadow-lg transition-all duration-300;
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 via-white to-blue-100 min-h-screen flex items-center justify-center p-4 font-sans">
-  <div class="container max-w-md w-full bg-white/90 rounded-2xl shadow-md p-6 animate-fadeIn backdrop-blur-2xl">
+<body class="flex items-center justify-center min-h-screen">
+  <div class="container">
     <div class="text-center">
-      <div id="loadingState" class="mb-4">
-        <div class="w-12 h-12 mx-auto mb-3 flex items-center justify-center rounded-full bg-blue-100 text-primary animate-pulse-slow">
-          <<i class="fa fa-spinner fa-spin text-xl"></</i>
-        </div>
-        <h2 class="text-xl font-bold text-gray-800 mb-2">验证链接有效性...</h2>
-        <p class="text-gray-500 text-sm" id="statusText">请稍候，正在检查链接状态...</p>
+      <h1 class="text-2xl font-bold mb-4">安全跳转中...</h1>
+      <p class="text-gray-500 mb-6">请稍候，正在为您跳转到目标页面。</p>
+      <div id="loading" class="mb-6">
+        <i class="fa fa-spinner fa-spin text-primary text-4xl"></i>
       </div>
-
-      <div id="errorState" class="mb-4 hidden">
-        <div class="w-12 h-12 mx-auto mb-3 flex items-center justify-center rounded-full bg-red-100 text-red-500">
-          <<i class="fa fa-exclamation-circle text-xl"></</i>
-        </div>
-        <h2 class="text-xl font-bold text-red-500 mb-2">链接无效</h2>
-        <p class="text-gray-500 text-sm mb-4" id="errorMsg">该链接已过期或参数错误</p>
-        <button onclick="window.location.href='index.html'" class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
-          返回生成页
-        </button>
+      <div id="error" class="hidden text-red-500 text-sm mb-4">
+        <!-- 错误信息将在这里显示 -->
       </div>
+      <button id="retryBtn" class="btn-primary hidden" onclick="retryJump()">
+        <i class="fa fa-refresh mr-2"></i> 重试
+      </button>
     </div>
   </div>
-
   <script>
-    // Base64解码函数
-    function base64Decode(str) {
-      try {
-        return decodeURIComponent(escape(atob(str)));
-      } catch (e) {
-        return null;
-      }
-    }
-
-    // 获取URL参数
-    function getUrlParam(name) {
-      const reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`);
-      const r = window.location.search.substr(1).match(reg);
-      return r ? decodeURIComponent(r[2]) : null;
-    }
-
-    // 验证链接有效性
-    function validateLink() {
-      const encodedParams = getUrlParam('c');
-      const customSuffix = getUrlParam('s');
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      // 获取参数
+      var params = new URLSearchParams(window.location.search);
+      var encodedParams = params.get('c');
+      var suffix = params.get('s');
       
-      // 验证编码参数是否存在
+      // 验证参数
       if (!encodedParams) {
-        showError('链接参数不完整，请检查链接是否正确');
+        showError('参数错误，请检查链接是否正确！');
         return;
       }
-
+      
       // 解码参数
-      const decodedParams = base64Decode(encodedParams);
-      if (!decodedParams) {
-        showError('链接参数解析失败，可能是无效链接');
-        return;
-      }
-
-      // 解析JSON参数
-      let params;
       try {
-        params = JSON.parse(decodedParams);
-      } catch (e) {
-        showError('链接参数格式错误');
-        return;
-      }
-
-      // 验证必要参数
-      if (!params.url || !/^https?:\/\//i.test(params.url)) {
-        showError('目标链接无效');
-        return;
-      }
-
-      // 验证自定义后缀（如果有）
-      if (customSuffix && params.suffix !== customSuffix) {
-        showError('自定义后缀不匹配，链接可能被篡改');
-        return;
-      }
-
-      // 验证有效期
-      if (params.expire && params.expire > 0) {
-        // 生成器中未记录创建时间，此处采用简化方案：以链接访问时为基准计算有效期
-        // 实际生产环境建议在生成时记录创建时间并加密传入
-        const expireHours = parseInt(params.expire);
-        const currentTime = new Date().getTime();
-        const expireTime = currentTime + expireHours * 60 * 60 * 1000;
+        var decodedParams = JSON.parse(atob(encodedParams));
+        var url = decodedParams.url;
+        var expire = decodedParams.expire;
+        var expectedSuffix = decodedParams.suffix;
         
-        // 此处仅作前端验证，实际生产环境需配合后端存储实现精准有效期控制
-        if (currentTime > expireTime) {
-          showError(`链接已过期，原有效期为${expireHours}小时`);
+        // 验证链接有效期
+        if (expire > 0) {
+          var timestamp = Date.now() / 1000;
+          var createTime = timestamp - expire;
+          if (timestamp > createTime) {
+            showError('链接已过期！');
+            return;
+          }
+        }
+        
+        // 验证自定义后缀（如果存在）
+        if (expectedSuffix && expectedSuffix !== suffix) {
+          showError('链接无效！');
           return;
         }
+        
+        // 验证目标网址
+        if (!/^https?:\/\//i.test(url)) {
+          showError('目标网址无效！');
+          return;
+        }
+        
+        // 跳转到目标网址
+        window.location.href = url;
+      } catch (err) {
+        showError('参数解码失败，请检查链接是否正确！');
       }
-
-      // 验证通过，跳转至目标链接
-      document.getElementById('statusText').textContent = '验证通过，即将跳转...';
-      setTimeout(() => {
-        window.location.href = params.url;
-      }, 1500);
-    }
-
+    });
+    
     // 显示错误信息
-    function showError(msg) {
-      document.getElementById('loadingState').classList.add('hidden');
-      document.getElementById('errorState').classList.remove('hidden');
-      document.getElementById('errorMsg').textContent = msg;
+    function showError(message) {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('error').textContent = message;
+      document.getElementById('error').classList.remove('hidden');
+      document.getElementById('retryBtn').classList.remove('hidden');
     }
-
-    // 页面加载完成后执行验证
-    document.addEventListener('DOMContentLoaded', validateLink);
+    
+    // 重试跳转
+    function retryJump() {
+      window.location.reload();
+    }
   </script>
 </body>
 </html>
