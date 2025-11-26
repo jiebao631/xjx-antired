@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>安全跳转页面</title>
   <style>
     /* 三点加载动画样式 */
@@ -97,24 +97,17 @@
 
   <!-- 全局水印 -->
   <div class="watermark" id="watermark">
-    <div class="watermark-text">提示：请联系TG:HXMVP</div>
+    <div class="watermark-text">提示：请联系TG:jiyuannb66</div>
   </div>
 
   <script>
     (function() {
+      // 这里不再有白名单限制
+      const WATERMARK_TEXT = '提示：请联系TG:HXMVP';
+
       // 显示三点加载动画
       function showLoadingAnimation() {
         document.getElementById('loadingContainer').style.display = 'block';
-      }
-
-      // 隐藏加载动画
-      function hideLoadingAnimation() {
-        document.getElementById('loadingContainer').style.display = 'none';
-      }
-
-      // 显示水印
-      function showWatermark() {
-        document.getElementById('watermark').style.display = 'block';
       }
 
       // 主处理逻辑
@@ -125,31 +118,29 @@
         const encodedParam = urlParams.get('c');
         
         if (!encodedParam) {
-          showWatermark();
-          hideLoadingAnimation();
+          document.getElementById('watermark').style.display = 'block';
+          document.getElementById('loadingContainer').style.display = 'none';
           return;
         }
         
         try {
           const trueUrl = atob(encodedParam);
-          if (trueUrl.startsWith("http")) {
+          if (trueUrl.includes("http")) {
             // 直接加载iframe，不判断域名
             const iframe = document.createElement('iframe');
             iframe.className = 'content';
             iframe.src = trueUrl;
             
             iframe.addEventListener('load', function() {
-              hideLoadingAnimation();
+              document.getElementById('loadingContainer').style.display = 'none';
             });
             
             document.body.appendChild(iframe);
-          } else {
-            throw new Error('Invalid URL');
           }
         } catch (e) {
           console.error('URL解码失败:', e);
-          showWatermark();
-          hideLoadingAnimation();
+          document.getElementById('watermark').style.display = 'block';
+          document.getElementById('loadingContainer').style.display = 'none';
         }
       }
 
@@ -163,7 +154,6 @@
         }
       });
 
-      // 初始化处理
       processRedirect();
     })();
   </script>
